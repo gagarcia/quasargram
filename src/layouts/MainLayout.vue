@@ -44,7 +44,7 @@ export default {
   .q-toolbar__title
     font-size: 30px
     @media (max-width: $breakpoint-xs-max)
-      text-align: center
+      // text-align: center
     
   .q-footer
     .q-tab__icon
