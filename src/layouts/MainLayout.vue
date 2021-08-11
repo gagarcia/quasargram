@@ -20,7 +20,7 @@
       </q-tabs>
     </q-footer>
 
-    <q-page-container>
+    <q-page-container class="bg-grey-1">
       <router-view />
     </q-page-container>
   </q-layout>
@@ -39,8 +39,8 @@ export default {
 
 <style lang="sass">
   .q-toolbar
-    @media (min-width: $breakpoint-xs-min)
-      height: 80px
+    // @media (min-width: $breakpoint-xs-min)
+    //   height: 80px
   .q-toolbar__title
     font-size: 30px
     @media (max-width: $breakpoint-xs-max)
