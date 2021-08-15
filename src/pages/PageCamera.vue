@@ -44,6 +44,7 @@
     <div class="row justify-center q-ma-md">
       <q-input
         class="col col-sm-6"
+        :loading  = "locationLoading"
         lazy-rules
         v-model="post.location"
         dense
@@ -51,7 +52,7 @@
         :rules="[ val => val && val.length > 0 || 'Please type something']"
       >
         <template v-slot:append>
-          <q-btn round dense flat icon="eva-navigation-2-outline" />
+          <q-btn v-if="!locationLoading" @click="getLocation" round dense flat icon="eva-navigation-2-outline" />
         </template>
 
       </q-input>
@@ -82,7 +83,8 @@ export default {
       },
       imageCaptured: false,
       imageUpload:[],
-      hasCameraSupport: true
+      hasCameraSupport: true,
+      locationLoading: false
     }
   },
   methods: {
@@ -160,6 +162,36 @@ export default {
       // write the ArrayBuffer to a blob, and you're done
       var blob = new Blob([ab], {type: mimeString});
       return blob;
+    },
+    getLocation () {
+      this.locationLoading = true
+      navigator.geolocation.getCurrentPosition(position => {
+        this.getCityAndCoutry(position)
+      }, err => {
+        this.locationError()
+      },{ timeout: 10000 })
+    },
+    getCityAndCoutry(position) {
+      let apiUrl = `https://geocode.xyz/${ position.coords.latitude },${ position.coords.longitude }?json=1`
+      this.$axios.get(apiUrl).then(result => {
+        this.locationSucces(result)
+      }).catch(err => {
+        this.locationError()
+      })
+    },
+    locationSucces(result) {
+      this.post.location = result.data.city
+      if (result.data.country) {
+        this.post.location += `, ${ result.data.country }`
+      }
+      this.locationLoading = false
+    },
+    locationError() {
+      this.$q.dialog({
+        title: 'Ops!',
+        message: 'we could not find you'
+      })
+      this.locationLoading = false
     }
   },
 
