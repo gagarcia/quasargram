@@ -28,14 +28,16 @@
     // https://firebase.google.com/docs/functions/write-firebase-functions
 
     exports.posts = functions.https.onRequest((request, response) => {
-    let posts = []
+        response.set('Access-Control-Allow-Origin', '*')
+    
+        let posts = []
 
-    db.collection('posts').get().then(snapshot => {
-        
-        snapshot.forEach((doc) => {
-            posts.push(doc.data())
-        });
-        response.send(posts);
+        db.collection('posts').orderBy('date', 'desc').get().then(snapshot => {
+            
+            snapshot.forEach((doc) => {
+                posts.push(doc.data())
+            });
+            response.send(posts);
 
-    })
+        })
     });
