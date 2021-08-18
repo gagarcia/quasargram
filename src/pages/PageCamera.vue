@@ -59,7 +59,7 @@
     </div>
 
     <div class="row justify-center q-ma-md">
-      <q-btn unelevated rounded color="grey-10" label="Post" class="q-mt-md"/>
+      <q-btn @click="addPost()" unelevated rounded color="grey-10" label="Post" class="q-mt-md"/>
     </div>
 
 
@@ -192,6 +192,21 @@ export default {
         message: 'we could not find you'
       })
       this.locationLoading = false
+    },
+    addPost() {
+      let formData = new FormData()
+
+      formData.append('id', this.post.id)
+      formData.append('caption', this.post.caption)
+      formData.append('location', this.post.location)
+      formData.append('date', this.post.date)
+      formData.append('file', this.post.photo, this.post.id + '.png')
+
+      this.$axios.post(`${ process.env.API }/createPost`, formData).then(response => {
+        console.log('response: ', response)
+      }).catch(err => {
+        console.log('err', err)
+      })
     }
   },
 
